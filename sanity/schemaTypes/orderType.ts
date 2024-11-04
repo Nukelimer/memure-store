@@ -29,11 +29,11 @@ export const orderType = defineType({
       name: "email",
       title: "Customer Email",
       type: "string",
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().email(),
     }),
     defineField({
-        name: "products",
-      title: "Products",
+      name: "product",
+      title: "Product",
       type: "array",
       of: [
         defineArrayMember({
@@ -43,7 +43,7 @@ export const orderType = defineType({
               name: "product",
               title: "Product Bought",
               type: "reference",
-              to: [{ type: "product" }],
+              to: [{ type: "string" }],
             }),
             defineField({
               name: "quantity",
@@ -71,12 +71,7 @@ export const orderType = defineType({
         }),
       ],
     }),
-    defineField({
-      name: "currency",
-      title: "Currency",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-    }),
+
     defineField({
       name: "totalPrice",
       title: "Total Price",
@@ -106,14 +101,13 @@ export const orderType = defineType({
     }),
 
     defineField({
-        name: "orderDate",
-        title: "Order Date",
-        type: "datetime",
-        validation: (Rule) =>Rule.required(),
+      name: "orderDate",
+      title: "Order Date",
+      type: "datetime",
+      validation: (Rule) => Rule.required(),
     }),
-    
-],
-preview: {
+  ],
+  preview: {
     select: {
       name: "customerName",
       amount: "totalPrice",
@@ -122,8 +116,7 @@ preview: {
       email: "email",
     },
     prepare(select) {
-
-        const orderIdSnippet = `${select.orderId.slice(0,5)}...${select.orderId.slice(-5)}`
+      const orderIdSnippet = `${select.orderId.slice(0, 5)}...${select.orderId.slice(-5)}`;
       return {
         title: `${select.name}  ${orderIdSnippet}`,
         subtitle: `${select.amount} ${select.currency}, ${select.email} `,
