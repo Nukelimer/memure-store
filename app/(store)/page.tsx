@@ -10,10 +10,10 @@ export default async function Home() {
   const categories = await getAllCategories();
   return (
     <div>
-      <><BlackFriday/></>
+      <BlackFriday />
 
       <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 p-4">
-        <ProductView products={products} />
+        <ProductView products={products} categories={categories} />
       </div>
     </div>
   );
