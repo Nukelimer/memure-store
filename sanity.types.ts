@@ -353,6 +353,69 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
   }>;
 }>;
 
+// Source: ./sanity/lib/products/getProductByCategory.ts
+// Variable: PRODUCT_BY_CATEGORY_QUERY
+// Query: *[              _type == 'productType' && references(*[_type == 'category' && slug.current == $categorySlug]._id)] | order(name asc)
+export type PRODUCT_BY_CATEGORY_QUERYResult = Array<{
+  _id: string;
+  _type: "productType";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }>;
+  price?: number;
+  stock?: number;
+  categories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "category";
+  }>;
+}>;
+
 // Source: ./sanity/lib/products/getProductBySlug.ts
 // Variable: PRODUCT_BY_ID_QUERY
 // Query: *[              _type == 'productType' && slug.current == $slug      ] | order(name asc) [0]
@@ -503,6 +566,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "*[\n\n\n        _type == 'category'\n    ] | order(name asc)": ALL_CATEGORIES_QUERYResult;
     "*[\n\n\n        _type == 'productType'\n    ] | order(name asc)": ALL_PRODUCTS_QUERYResult;
+    "*[\n  \n  \n          _type == 'productType' && references(*[_type == 'category' && slug.current == $categorySlug]._id)] | order(name asc)": PRODUCT_BY_CATEGORY_QUERYResult;
     "*[\n  \n  \n          _type == 'productType' && slug.current == $slug\n      ] | order(name asc) [0]": PRODUCT_BY_ID_QUERYResult;
     "*[_type == 'productType' && name match $searchParam] | order(name asc)": PRODUCT_SEARCH_QUERYResult;
     " *[_type == \"sale\" && isActive == true && couponCode == $couponCode ] | order(validFrom desc) [0]": ACTIVE_SALE_BY_COUPON_QUERYResult;
