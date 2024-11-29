@@ -19,11 +19,15 @@ import {
   PackageIcon,
   TrolleyIcon,
 } from "@sanity/icons";
+import { useBasketStore } from "@/store/store";
 
 function Header() {
   const { user } = useUser();
   const [toggleMore, setToggleMore] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false); // Track animation state
+  const [isAnimating, setIsAnimating] = useState(false);
+  const itemCount = useBasketStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
 
   const time = new Date().getHours();
   const greetUser =
@@ -113,16 +117,34 @@ function Header() {
                 </div>
               </>
             ) : (
-              <SignInButton mode="modal" />
+                <div className=" flex flex-col gap-2 ">
+                  <span className=" bg-green-500 rounded py-1 px-4 text-center text-white animate-pulse ">
+
+                <SignInButton mode="modal" />
+
+                  </span>
+                <Link
+                  className="flex-1 relative flex justify-center sm:justify-start sm:flex-none items-center space-x-2 bg-green-500 hover:bg-green-800 text-white font-bold py-1 px-4 rounded"
+                  href={"/basket"}>
+                  <TrolleyIcon className="w-8 h-8" />
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {itemCount}
+                  </span>
+                  <p className="">My Cart </p>
+                </Link>
+              </div>
             )}
-            <div className="sm:absolute right-3">
+            <div className="sm:absolute right-3 z-50">
               {toggleMore && (
                 <div className="">
                   <Link
                     className="flex-1 relative flex justify-center sm:justify-start sm:flex-none items-center space-x-2 bg-green-500 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
                     href={"/basket"}>
                     <TrolleyIcon className="w-8 h-8" />
-                    <span>My Cart</span>
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                      {itemCount}
+                    </span>
+                    <p className="">My Cart </p>
                   </Link>
                   <SignedIn>
                     <Link

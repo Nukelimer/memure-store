@@ -16,7 +16,7 @@ interface BasketState {
   getGroupedItems: () => BasketItem[];
 }
 
-const useBasketStore = create<BasketState>()(
+export const useBasketStore = create<BasketState>()(
   persist(
     (set, get) => ({
       items: [],
@@ -35,10 +35,36 @@ const useBasketStore = create<BasketState>()(
               ),
             };
           } else {
-              return {}
+            return { items: [...state.items, { product, quantity: 1 }] };
           }
         }),
+      removeItem: (productId) =>
+        set((state) => ({
+          items: state.items.reduce((acc, item) => {
+            if (item.product._id === productId) {
+              if (item.quantity > 1) {
+                acc.push({ ...item, quantity: item.quantity - 1 });
+              } else {
+                acc.push(item);
+              }
+            }
+            return acc;
+          }, [] as BasketItem[]),
+        })),
+      clearBasket: () => set({ items: [] }),
+      getTotalPrice: () => {
+        return get().items.reduce(
+          (total, item) => total + (item.product.price ?? 0) * item.quantity,
+          0
+        );
+      },
+      getItemCount: (productid) => {
+        const item = get().items.find((item) => item.product._id === productid);
+        return item ? item.quantity : 0;
+      },
+      getGroupedItems: () => get().items,
     }),
+
     { name: "basket-store" }
   )
 );
